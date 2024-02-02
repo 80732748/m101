@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a node in the queue
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Structure for the queue
+struct Queue {
+    struct Node* front;
+    struct Node* rear;
+};
+
+// Structure for a stack
+struct Stack {
+    struct Node* top;
+};
+
+// Function to initialize a new queue
+struct Queue* createQueue() {
+    struct Queue* queue = (struct Queue*)malloc(sizeof(struct Queue));
+    queue->front = queue->rear = NULL;
+    return queue;
+}
+
+// Function to initialize a new stack
+struct Stack* createStack() {
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top = NULL;
+    return stack;
+}
+
+// Function to enqueue an element to the queue
+void enqueue(struct Queue* queue, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (queue->rear == NULL) {
+        queue->front = queue->rear = newNode;
+        return;
+    }
+
+    queue->rear->next = newNode;
+    queue->rear = newNode;
+}
+
+// Function to dequeue an element from the queue
+int dequeue(struct Queue* queue) {
+    if (queue->front == NULL)
+        return -1; // Queue is empty
+
+    int data = queue->front->data;
+    struct Node* temp = queue->front;
+  int data = queue->front->data;
+    struct Node* temp = queue->front;
+    queue->front = queue->front->next;
+
+    if (queue->front == NULL)
+        queue->rear = NULL;
+
+    free(temp);
+    return data;
+}
+
+// Function to push an element onto the stack
+void push(struct Stack* stack, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = stack->top;
+    stack->top = newNode;
+}
+
+// Function to pop an element from the stack
+int pop(struct Stack* stack) {
+    if (stack->top == NULL)
+        return -1; // Stack is empty
+
+    int data = stack->top->data;
+    struct Node* temp = stack->top;
+    stack->top = stack->top->next;
+    free(temp);
+    return data;
+}
+
+// Function to reverse a queue using a stack
+void reverseQueue(struct Queue* queue) {
+    struct Stack* stack = createStack();
+
+  while (queue->front != NULL) {
+        push(stack, dequeue(queue));
+    }
+
+    // Pop elements from the stack and enqueue back into the queue
+    while (stack->top != NULL) {
+        enqueue(queue, pop(stack));
+    }
+}
+
+// Function to print the elements of a queue
+void printQueue(struct Queue* queue) {
+    struct Node* temp = queue->front;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Driver program to test the above functions
+int main() {
+    struct Queue* myQueue = createQueue();
+
+    // Enqueue elements
+    enqueue(myQueue, 1);
+/ Driver program to test the above functions
+int main() {
+    struct Queue* myQueue = createQueue();
+
+    // Enqueue elements
+    enqueue(myQueue, 1);
+    enqueue(myQueue, 2);
+    enqueue(myQueue, 3);
+    enqueue(myQueue, 4);
+
+    printf("Original Queue: ");
+    printQueue(myQueue);
+
+    // Reverse the queue
+    reverseQueue(myQueue);
+
+    printf("Reversed Queue: ");
+    printQueue(myQueue);
+
+    return 0;
+}
